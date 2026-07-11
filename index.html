@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Somatex Proxy Solution</title>
+    <style>
+        /* Modern Color Palette */
+        :root {
+            --slate-dark: #0f172a;
+            --slate-blue: #1e293b;
+            --charcoal: #334155;
+            --accent-blue: #3b82f6; /* Vibrant accent for buttons */
+            --accent-hover: #2563eb;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
+            --text-gray: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--slate-dark);
+            line-height: 1.6;
+        }
+
+        /* Navigation Bar */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--slate-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--charcoal);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: var(--accent-blue);
+        }
+
+        /* Auth Buttons */
+        .auth-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-login {
+            background-color: transparent;
+            color: var(--slate-dark);
+            border: 1px solid #cbd5e1;
+        }
+
+        .btn-login:hover {
+            background-color: #f1f5f9;
+            border-color: var(--slate-dark);
+        }
+
+        .btn-signup {
+            background-color: var(--accent-blue);
+            color: var(--white);
+            border: 1px solid var(--accent-blue);
+        }
+
+        .btn-signup:hover {
+            background-color: var(--accent-hover);
+            border-color: var(--accent-hover);
+        }
+
+        /* Hero Section (Geometric vibe) */
+        .hero {
+            background: linear-gradient(135deg, var(--slate-dark) 0%, var(--charcoal) 100%);
+            color: var(--white);
+            padding: 6rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle geometric background pattern */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 10%, transparent 10%),
+                        radial-gradient(circle, rgba(255,255,255,0.03) 10%, transparent 10%);
+            background-size: 50px 50px;
+            background-position: 0 0, 25px 25px;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            margin-bottom: 2.5rem;
+        }
+
+        .btn-large {
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Proxy Location Gallery */
+        .gallery-section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--slate-dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--text-gray);
+            font-size: 1.1rem;
+        }
+
+        .proxy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+
+        .proxy-card {
+            background-color: var(--white);
+            border-radius: 12px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .proxy-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-blue);
+        }
+
+        .proxy-flag {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .proxy-card h3 {
+            font-size: 1.5rem;
+            color: var(--slate-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .proxy-card p {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-btn {
+            background-color: var(--bg-light);
+            color: var(--slate-dark);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .proxy-card:hover .card-btn {
+            background-color: var(--accent-blue);
+            color: var(--white);
+        }
+
+        /* Simple Footer */
+        footer {
+            background-color: var(--slate-dark);
+            color: #94a3b8;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-top: 4px solid var(--charcoal);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-icon">🌍</span> Somatex
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#locations">Locations</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#docs">Documentation</a></li>
+                </ul>
+            </nav>
+            <div class="auth-group">
+                <a href="#login" class="btn btn-login">Sign In</a>
+                <a href="#signup" class="btn btn-signup">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Premium Proxies for Global Operations</h1>
+            <p>High-speed, ultra-secure residential and datacenter proxies tailored for your needs. Connect instantly to top-tier nodes worldwide.</p>
+            <a href="#pricing" class="btn btn-signup btn-large">Get Started Now</a>
+        </div>
+    </section>
+
+    <!-- Interactive Proxy Gallery -->
+    <section id="locations" class="gallery-section">
+        <div class="section-header">
+            <h2>Global Proxy Network</h2>
+            <p>Access high-quality nodes from our most requested regions.</p>
+        </div>
+        
+        <div class="proxy-grid">
+            <!-- US Card -->
+            <div class="proxy-card">
+                <div class="proxy-flag">🇺🇸</div>
+                <h3>United States</h3>
+                <p>99.9% Uptime • High Speed • Unlimited Bandwidth</p>
+                <button class="card-btn">View Plans</button>
+            </div>
+
+            <!-- Germany Card -->
+            <div class="proxy-card">
+                <div class="proxy-flag">🇩🇪</div>
+                <h3>Germany</h3>
+                <p>Premium Europe Routing • Secure • Low Latency</p>
+                <button class="card-btn">View Plans</button>
+            </div>
+
+            <!-- Australia Card -->
+            <div class="proxy-card">
+                <div class="proxy-flag">🇦🇺</div>
+                <h3>Australia</h3>
+                <p>Oceania Coverage • Residential IPs • Rotating</p>
+                <button class="card-btn">View Plans</button>
+            </div>
+
+            <!-- Malaysia Card -->
+            <div class="proxy-card">
+                <div class="proxy-flag">🇲🇾</div>
+                <h3>Malaysia</h3>
+                <p>Asia-Pacific Access • Datacenter • Affordable</p>
+                <button class="card-btn">View Plans</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Somatex Proxy Solution. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
