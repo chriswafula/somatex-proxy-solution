@@ -1,69 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentication - Somatex Proxy Solution</title>
-    <style>
-        /* [Keep all your existing CSS here...] */
-        :root {
-            --bg-base: #101623;
-            --bg-surface: #1a2235;
-            --bg-surface-light: #252f44;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-blue: #0ea5e9;
-            --accent-hover: #0284c7;
-            --border-color: #2e3b52;
-            --radius: 12px;
-        }
-        /* (Rest of your CSS styles remain exactly as you have them) */
-    </style>
-</head>
-<body>
-
-    <div class="auth-container">
-        <!-- Logo -->
-        <div class="logo-container">
-            <a href="index.html" class="logo">
-                <span class="logo-icon">🌐</span> Somatex
-            </a>
-        </div>
-
-        <div class="auth-card">
-            <!-- Tabs -->
-            <div class="auth-tabs">
-                <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
-                <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
-            </div>
-
-            <!-- Login Form -->
-            <form id="loginForm" class="auth-form active">
-                <div class="form-group">
-                    <label for="login-email">Email Address</label>
-                    <input type="email" id="login-email" class="form-control" placeholder="you@company.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn-submit">Log In</button>
-            </form>
-
-            <!-- Sign Up Form -->
-            <form id="signupForm" class="auth-form">
-                <div class="form-group">
-                    <label for="signup-name">Full Name</label>
-                    <input type="text" id="signup-name" class="form-control" placeholder="John Doe" required>
-                </div>
-                <div class="form-group">
-                    <label for="signup-email">Email Address</label>
-                    <input type="email" id="signup-email" class="form-control" placeholder="you@company.com" required>
-                </div>
-                <button type="submit" class="btn-submit">Create Account</button>
-            </form>
-        </div>
-    </div>
+<!-- ... existing HTML ... -->
 
     <script>
         // Tab switching logic
@@ -72,6 +7,7 @@
             const forms = document.querySelectorAll('.auth-form');
             tabs.forEach(tab => tab.classList.remove('active'));
             forms.forEach(form => form.classList.remove('active'));
+            
             if(tabName === 'login') {
                 tabs[0].classList.add('active');
                 document.getElementById('loginForm').classList.add('active');
@@ -81,15 +17,19 @@
             }
         }
 
-        // Redirection logic to keep everything in one file
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            window.location.href = 'dashboard.html';
+        // Redirection logic
+        // We select the forms by their IDs
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop the page from reloading
+            window.location.href = 'dashboard.html'; // Go to dashboard
         });
 
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            window.location.href = 'dashboard.html';
+        signupForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop the page from reloading
+            window.location.href = 'dashboard.html'; // Go to dashboard
         });
     </script>
 </body>
