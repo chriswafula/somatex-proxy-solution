@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Somatex Proxy Solution</title>
+    <title>Client Dashboard - Somatex</title>
     <style>
-        /* Shared CSS Variables */
         :root {
             --bg-base: #101623;
             --bg-surface: #1a2235;
@@ -15,26 +14,23 @@
             --accent-blue: #0ea5e9;
             --accent-hover: #0284c7;
             --border-color: #2e3b52;
-            --success-green: #10b981;
+            --success: #10b981;
+            --danger: #ef4444;
             --radius: 12px;
-            --sidebar-width: 250px;
+            --sidebar-width: 260px;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
 
         body {
             background-color: var(--bg-base);
             color: var(--text-primary);
             display: flex;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* --- Sidebar Navigation --- */
+        /* Sidebar */
         .sidebar {
             width: var(--sidebar-width);
             background-color: var(--bg-surface);
@@ -43,79 +39,262 @@
             flex-direction: column;
             position: fixed;
             height: 100vh;
+            z-index: 10;
         }
 
         .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); }
-
         .logo { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
-        .logo-icon { color: var(--accent-blue); }
-
         .nav-menu { padding: 1.5rem 1rem; flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
-        .nav-link { display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; font-weight: 500; transition: all 0.3s ease; }
+        .nav-link { display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1rem; color: var(--text-secondary); text-decoration: none; border-radius: 8px; font-weight: 500; transition: 0.3s; }
         .nav-link:hover, .nav-link.active { background-color: var(--bg-surface-light); color: var(--text-primary); }
         .nav-link.active { border-left: 3px solid var(--accent-blue); border-radius: 0 8px 8px 0; }
 
-        .sidebar-footer { padding: 1.5rem 1rem; border-top: 1px solid var(--border-color); }
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2.5rem 3rem;
+        }
 
-        /* --- Main Content Area --- */
-        .main-content { margin-left: var(--sidebar-width); flex: 1; padding: 2rem 3rem; }
+        .welcome-header { margin-bottom: 2.5rem; }
+        .welcome-header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        .welcome-header p { color: var(--text-secondary); font-size: 1.1rem; }
 
-        /* KPI Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
-        .stat-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.5rem; }
-        .stat-value { font-size: 1.8rem; font-weight: 700; margin: 0.5rem 0; }
+        /* Section Containers */
+        .section-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .card-panel { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 3rem; }
 
-        /* Proxy Credentials Table */
-        .table-section { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 1.5rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-        th { color: var(--text-secondary); font-size: 0.85rem; text-align: left; padding: 1rem; border-bottom: 1px solid var(--border-color); }
-        td { padding: 1rem; border-bottom: 1px solid var(--border-color); }
+        /* Table Styles (Active Proxies) */
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 1rem; color: var(--text-secondary); font-size: 0.85rem; text-transform: uppercase; border-bottom: 1px solid var(--border-color); }
+        td { padding: 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.95rem; }
+        tr:last-child td { border-bottom: none; }
+        
+        .badge { padding: 0.3rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        .badge.active { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .badge.expired { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; transition: 0.3s; }
+        .btn-outline:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+
+        /* Pricing Grid (Country Plans) */
+        .plans-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; }
+        .plan-card {
+            background: var(--bg-surface-light);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .plan-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-color: var(--accent-blue); }
+        .plan-flag { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .plan-country { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .plan-price { font-size: 1.5rem; font-weight: 700; color: var(--accent-blue); margin-bottom: 1.5rem; }
+        .plan-price span { font-size: 0.9rem; color: var(--text-secondary); font-weight: 400; }
+        
+        .btn-buy { width: 100%; padding: 0.75rem; background: var(--accent-blue); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .btn-buy:hover { background: var(--accent-hover); }
+
+        /* M-Pesa Modal Overlay */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(16, 22, 35, 0.8); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center; z-index: 100; opacity: 0; transition: opacity 0.3s;
+        }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        
+        .mpesa-modal { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 2rem; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); transform: translateY(20px); transition: transform 0.3s; }
+        .modal-overlay.show .mpesa-modal { transform: translateY(0); }
+        
+        .mpesa-logo { color: #10b981; font-size: 2rem; margin-bottom: 1rem; }
+        .modal-title { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .modal-desc { color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        
+        .input-group { margin-bottom: 1.5rem; text-align: left; }
+        .input-group label { display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.85rem; }
+        .input-group input { width: 100%; padding: 0.8rem; background: var(--bg-base); border: 1px solid var(--border-color); border-radius: 6px; color: white; font-size: 1rem; }
+        .input-group input:focus { outline: none; border-color: #10b981; }
+
+        .btn-mpesa { width: 100%; padding: 0.8rem; background: #10b981; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.3s; margin-bottom: 1rem; }
+        .btn-mpesa:hover { background: #059669; }
+        .btn-cancel { background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-size: 0.9rem; }
+        .btn-cancel:hover { color: white; }
+
     </style>
 </head>
 <body>
 
+    <!-- Sidebar -->
     <aside class="sidebar">
         <div class="sidebar-header">
-            <a href="index.html" class="logo"><span class="logo-icon">🌐</span> Somatex</a>
+            <a href="#" class="logo"><span style="color:var(--accent-blue)">🌐</span> Somatex</a>
         </div>
         <nav class="nav-menu">
             <a href="#" class="nav-link active">📊 Dashboard</a>
             <a href="#" class="nav-link">🗄️ Proxy Network</a>
-            <a href="#" class="nav-link">🔑 API</a>
+            <a href="#" class="nav-link">💳 Billing & Usage</a>
+            <a href="#" class="nav-link">⚙️ Settings</a>
         </nav>
-        <div class="sidebar-footer">
-            <a href="index.html" class="nav-link" style="color: #ef4444;">🚪 Log Out</a>
-        </div>
     </aside>
 
+    <!-- Main Content -->
     <main class="main-content">
-        <header style="margin-bottom: 2rem;">
-            <h1>Dashboard</h1>
-        </header>
+        
+        <div class="welcome-header">
+            <h1>Welcome back, Client! 👋</h1>
+            <p>Manage your active connections or purchase new proxy plans.</p>
+        </div>
 
-        <div class="stats-grid">
-            <div class="stat-card">
-                <p>Data Usage</p>
-                <div class="stat-value">34.2 / 50 GB</div>
+        <!-- Active Proxies Section -->
+        <div class="card-panel">
+            <div class="section-title">
+                Your Proxies
+                <button class="btn-outline" style="font-size: 0.8rem;">Refresh Status</button>
             </div>
-            <div class="stat-card">
-                <p>Active Proxies</p>
-                <div class="stat-value">145</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>IP Address</th>
+                        <th>Status</th>
+                        <th>Expires</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🇺🇸 United States</td>
+                        <td style="font-family: monospace;">192.168.1.104:8080</td>
+                        <td><span class="badge active">Active</span></td>
+                        <td>Aug 20, 2026</td>
+                        <td><button class="btn-outline">Copy Details</button></td>
+                    </tr>
+                    <tr>
+                        <td>🇬🇧 United Kingdom</td>
+                        <td style="font-family: monospace;">Hidden</td>
+                        <td><span class="badge expired">Expired</span></td>
+                        <td>Jul 10, 2026</td>
+                        <td><button class="btn-outline" onclick="openMpesaModal('UK Plan', 70)">Renew (70 KES)</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Available Plans Section -->
+        <div>
+            <div class="section-title">Global Proxy Plans</div>
+            <div class="plans-grid">
+                
+                <!-- USA Plan -->
+                <div class="plan-card">
+                    <div class="plan-flag">🇺🇸</div>
+                    <div class="plan-country">USA Plan</div>
+                    <div class="plan-price">100 <span>KES / mo</span></div>
+                    <button class="btn-buy" onclick="openMpesaModal('USA Plan', 100)">Buy Now</button>
+                </div>
+
+                <!-- Canada Plan -->
+                <div class="plan-card">
+                    <div class="plan-flag">🇨🇦</div>
+                    <div class="plan-country">Canada Plan</div>
+                    <div class="plan-price">100 <span>KES / mo</span></div>
+                    <button class="btn-buy" onclick="openMpesaModal('Canada Plan', 100)">Buy Now</button>
+                </div>
+
+                <!-- Germany Plan -->
+                <div class="plan-card">
+                    <div class="plan-flag">🇩🇪</div>
+                    <div class="plan-country">Germany Plan</div>
+                    <div class="plan-price">70 <span>KES / mo</span></div>
+                    <button class="btn-buy" onclick="openMpesaModal('Germany Plan', 70)">Buy Now</button>
+                </div>
+
+                <!-- UK Plan -->
+                <div class="plan-card">
+                    <div class="plan-flag">🇬🇧</div>
+                    <div class="plan-country">UK Plan</div>
+                    <div class="plan-price">70 <span>KES / mo</span></div>
+                    <button class="btn-buy" onclick="openMpesaModal('UK Plan', 70)">Buy Now</button>
+                </div>
+
+                <!-- Australia Plan -->
+                <div class="plan-card">
+                    <div class="plan-flag">🇦🇺</div>
+                    <div class="plan-country">Australia Plan</div>
+                    <div class="plan-price">100 <span>KES / mo</span></div>
+                    <button class="btn-buy" onclick="openMpesaModal('Australia Plan', 100)">Buy Now</button>
+                </div>
+
+                <!-- Japan Plan -->
+                <div class="plan-card">
+                    <div class="plan-flag">🇯🇵</div>
+                    <div class="plan-country">Japan Plan</div>
+                    <div class="plan-price">70 <span>KES / mo</span></div>
+                    <button class="btn-buy" onclick="openMpesaModal('Japan Plan', 70)">Buy Now</button>
+                </div>
+
+                <!-- China Plan -->
+                <div class="plan-card">
+                    <div class="plan-flag">🇨🇳</div>
+                    <div class="plan-country">China Plan</div>
+                    <div class="plan-price">70 <span>KES / mo</span></div>
+                    <button class="btn-buy" onclick="openMpesaModal('China Plan', 70)">Buy Now</button>
+                </div>
+
             </div>
         </div>
 
-        <section class="table-section">
-            <h2>Recent Proxy Endpoints</h2>
-            <table>
-                <thead>
-                    <tr><th>Location</th><th>Type</th><th>IP Address</th><th>Status</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>🇺🇸 US</td><td>Datacenter</td><td>192.168.1.104</td><td>Active</td></tr>
-                    <tr><td>🇩🇪 Germany</td><td>Residential</td><td>45.22.109.11</td><td>Active</td></tr>
-                </tbody>
-            </table>
-        </section>
     </main>
+
+    <!-- M-Pesa Payment Modal -->
+    <div class="modal-overlay" id="mpesaOverlay">
+        <div class="mpesa-modal">
+            <div class="mpesa-logo">📱</div>
+            <h2 class="modal-title">M-Pesa Payment</h2>
+            <p class="modal-desc">You are purchasing the <strong id="modalPlanName" style="color:white;">Plan</strong> for <strong id="modalPlanPrice" style="color:#10b981;">0 KES</strong>.</p>
+            
+            <div class="input-group">
+                <label>M-Pesa Phone Number (e.g. 0712345678)</label>
+                <input type="tel" placeholder="Enter your number" id="mpesaNumber" required>
+            </div>
+
+            <button class="btn-mpesa" onclick="simulateMpesaPrompt()">Send Payment Prompt</button>
+            <button class="btn-cancel" onclick="closeMpesaModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Interface Logic -->
+    <script>
+        const modal = document.getElementById('mpesaOverlay');
+        const planNameEl = document.getElementById('modalPlanName');
+        const planPriceEl = document.getElementById('modalPlanPrice');
+
+        // Open Modal and inject the correct price/plan based on what the user clicked
+        function openMpesaModal(planName, price) {
+            planNameEl.innerText = planName;
+            planPriceEl.innerText = price + " KES";
+            modal.classList.add('show');
+        }
+
+        // Close the modal
+        function closeMpesaModal() {
+            modal.classList.remove('show');
+            document.getElementById('mpesaNumber').value = ''; // clear input
+        }
+
+        // Placeholder for the Firebase/M-Pesa API integration
+        function simulateMpesaPrompt() {
+            const phone = document.getElementById('mpesaNumber').value;
+            if(!phone) {
+                alert("Please enter a valid phone number.");
+                return;
+            }
+            
+            alert(`A prompt has been sent to ${phone}. Please enter your M-Pesa PIN on your phone to complete the purchase.`);
+            
+            // In the next phase, this is where we will trigger the Firebase Cloud Function!
+            closeMpesaModal();
+        }
+    </script>
 </body>
 </html>
