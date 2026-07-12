@@ -1,36 +1,117 @@
-<!-- ... existing HTML ... -->
-
-    <script>
-        // Tab switching logic
-        function switchTab(tabName) {
-            const tabs = document.querySelectorAll('.tab-btn');
-            const forms = document.querySelectorAll('.auth-form');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            forms.forEach(form => form.classList.remove('active'));
-            
-            if(tabName === 'login') {
-                tabs[0].classList.add('active');
-                document.getElementById('loginForm').classList.add('active');
-            } else {
-                tabs[1].classList.add('active');
-                document.getElementById('signupForm').classList.add('active');
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - Somatex Proxy Solution</title>
+    <style>
+        :root {
+            --bg-base: #101623;
+            --bg-surface: #1a2235;
+            --bg-surface-light: #252f44;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-blue: #0ea5e9;
+            --accent-hover: #0284c7;
+            --border-color: #2e3b52;
+            --radius: 12px;
         }
 
-        // Redirection logic
-        // We select the forms by their IDs
-        const loginForm = document.getElementById('loginForm');
-        const signupForm = document.getElementById('signupForm');
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
 
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Stop the page from reloading
-            window.location.href = 'dashboard.html'; // Go to dashboard
-        });
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(circle at center top, rgba(14, 165, 233, 0.05) 0%, transparent 70%);
+        }
 
-        signupForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Stop the page from reloading
-            window.location.href = 'dashboard.html'; // Go to dashboard
-        });
+        .auth-container { width: 100%; max-width: 400px; padding: 2rem; }
+
+        .logo { font-size: 2rem; font-weight: 700; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; }
+
+        .auth-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        .auth-tabs { display: flex; background: var(--bg-base); border-radius: 8px; padding: 4px; margin-bottom: 1.5rem; }
+        .tab-btn { flex: 1; padding: 0.7rem; border: none; background: transparent; color: var(--text-secondary); font-weight: 600; cursor: pointer; border-radius: 6px; transition: 0.3s; }
+        .tab-btn.active { background: var(--bg-surface-light); color: var(--text-primary); }
+
+        .auth-form { display: none; }
+        .auth-form.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; } }
+
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.3rem; }
+        .form-control { width: 100%; padding: 0.7rem; background: var(--bg-base); border: 1px solid var(--border-color); color: white; border-radius: 6px; }
+        
+        .btn-submit { width: 100%; padding: 0.8rem; background: var(--accent-blue); color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: 0.3s; }
+        .btn-submit:hover { background: var(--accent-hover); }
+
+        .return-home { text-align: center; margin-top: 1.5rem; }
+        .return-home a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <a href="index.html" class="logo"><span style="color:var(--accent-blue)">🌐</span> Somatex</a>
+        
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Log In</button>
+                <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- Login -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" class="form-control" required placeholder="you@company.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-submit">Log In</button>
+            </form>
+
+            <!-- Sign Up -->
+            <form id="signupForm" class="auth-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" class="form-control" required placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" class="form-control" required placeholder="you@company.com">
+                </div>
+                <button type="submit" class="btn-submit">Create Account</button>
+            </form>
+        </div>
+
+        <div class="return-home">
+            <a href="index.html">← Return to Home</a>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.innerText.toLowerCase().includes(tab)));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.toggle('active', f.id === tab + 'Form'));
+        }
+
+        // Redirection
+        document.getElementById('loginForm').addEventListener('submit', (e) => { e.preventDefault(); window.location.href = 'dashboard.html'; });
+        document.getElementById('signupForm').addEventListener('submit', (e) => { e.preventDefault(); window.location.href = 'dashboard.html'; });
     </script>
 </body>
 </html>
